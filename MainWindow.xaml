@@ -1,0 +1,207 @@
+﻿<Window x:Class="InfoTheoryLab.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Лабораторная: Теория Информации"
+        Height="600" Width="800"
+        Background="#F0F4F8"
+        FontFamily="Segoe UI">
+
+    <!-- ==========================
+         Ресурсы (Styles)
+         ========================== -->
+    <Window.Resources>
+        <!-- Стиль для «Primary» кнопок (Прочитать, Шифровать, Дешифровать) -->
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Margin" Value="5,0"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Background" Value="#2E86C1"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#21618C"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <!-- При наведении мыши чуть светлее фон -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#5499C7"/>
+                            </Trigger>
+                            <!-- При нажатии фон темнее -->
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#1B4F72"/>
+                            </Trigger>
+                            <!-- Если кнопка заблокирована -->
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Background" Value="#BDC3C7"/>
+                                <Setter Property="Foreground" Value="#7F8C8D"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Стиль для «Secondary» кнопки (Очистить) на основе PrimaryButtonStyle -->
+        <Style x:Key="SecondaryButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryButtonStyle}">
+            <Setter Property="Background" Value="#ABB2B9"/>
+            <Setter Property="BorderBrush" Value="#7F8C8D"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#D5DBDB"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#95A5A6"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Унифицированный стиль для Label -->
+        <Style TargetType="Label">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <!-- Унифицированный стиль для TextBox -->
+        <Style TargetType="TextBox">
+            <Setter Property="Margin" Value="0,5"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+        </Style>
+
+        <!-- Стиль для GroupBox (заголовок, отступы) -->
+        <Style TargetType="GroupBox">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,10,0,0"/>
+        </Style>
+    </Window.Resources>
+
+
+    <!-- ==========================
+         Главная разметка окна
+         ========================== -->
+    <Grid Margin="20">
+        <Border Background="White"
+                CornerRadius="8"
+                Padding="20">
+            <Border.Effect>
+                <DropShadowEffect Color="Black"
+                                  BlurRadius="8"
+                                  ShadowDepth="2"
+                                  Opacity="0.2"/>
+            </Border.Effect>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- ==========================
+                     1. Выбор алгоритма
+                     ========================== -->
+                <Label Grid.Row="0" Grid.Column="0"
+                       Content="Алгоритм:"/>
+                <ComboBox x:Name="AlgorithmComboBox"
+                          Grid.Row="0" Grid.Column="1"
+                          Width="200"
+                          SelectedIndex="0">
+                    <ComboBoxItem>Rail Fence (англ.)</ComboBoxItem>
+                    <ComboBoxItem>Виженер (рус.)</ComboBoxItem>
+                </ComboBox>
+
+                <!-- ==========================
+                     2. Поле «Ключ»
+                     ========================== -->
+                <Label Grid.Row="1" Grid.Column="0"
+                       Content="Ключ:"
+                       Margin="0,10,0,0"/>
+                <TextBox x:Name="KeyTextBox"
+                         Grid.Row="1" Grid.Column="1"
+                         Width="300"
+                         Margin="0,10,0,0"/>
+
+                <!-- ==========================
+                     3. «Исходный текст» (GroupBox)
+                     ========================== -->
+                <GroupBox Header="Исходный текст"
+                          Grid.Row="2" Grid.Column="0"
+                          Grid.ColumnSpan="2">
+                    <TextBox x:Name="SourceTextBox"
+                             AcceptsReturn="True"
+                             VerticalScrollBarVisibility="Auto"
+                             TextWrapping="Wrap"/>
+                </GroupBox>
+
+                <!-- ==========================
+                     4. «Результат» (GroupBox)
+                     ========================== -->
+                <GroupBox Header="Результат"
+                          Grid.Row="3" Grid.Column="0"
+                          Grid.ColumnSpan="2">
+                    <TextBox x:Name="ResultTextBox"
+                             AcceptsReturn="True"
+                             IsReadOnly="True"
+                             VerticalScrollBarVisibility="Auto"
+                             TextWrapping="Wrap"
+                             Background="#FFF0F0F0"/>
+                </GroupBox>
+
+                <!-- ==========================
+                     5. Панель кнопок
+                     ========================== -->
+                <StackPanel Grid.Row="4"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            Margin="0,20,0,0">
+                    <Button x:Name="ReadFileButton"
+                            Content="Прочитать из файла"
+                            Width="150"
+                            Click="ReadFileButton_Click"
+                            Style="{StaticResource PrimaryButtonStyle}"/>
+
+                    <Button x:Name="EncryptButton"
+                            Content="Шифровать"
+                            Width="100"
+                            Click="EncryptButton_Click"
+                            Style="{StaticResource PrimaryButtonStyle}"/>
+
+                    <Button x:Name="DecryptButton"
+                            Content="Дешифровать"
+                            Width="100"
+                            Click="DecryptButton_Click"
+                            Style="{StaticResource PrimaryButtonStyle}"/>
+
+                    <Button x:Name="ClearButton"
+                            Content="Очистить"
+                            Width="100"
+                            Click="ClearButton_Click"
+                            Style="{StaticResource SecondaryButtonStyle}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
